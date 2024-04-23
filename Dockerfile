@@ -11,6 +11,6 @@ ENV JDBC_DATABASE_USERNAME ${JDBC_DATABASE_USERNAME}
 
 WORKDIR /app
 RUN ls -al
-COPY ./kupon_bookku-0.0.1-SNAPSHOT.jar /app
+COPY ./Kupon_BookKu-0.0.1-SNAPSHOT.jar /app
 EXPOSE 8080
-CMD ["java","-jar","kupon_bookku-0.0.1-SNAPSHOT.jar"]
+CMD ["java","-jar","Kupon_BookKu-0.0.1-SNAPSHOT.jar"]
