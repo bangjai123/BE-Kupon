@@ -1,4 +1,5 @@
 package id.ac.ui.cs.advprog.kupon_bookku.service;
 
-public interface KuponService {
+public class KuponServiceImpl {
+
 }
