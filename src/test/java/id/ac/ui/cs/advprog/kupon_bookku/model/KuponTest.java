@@ -6,29 +6,34 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class KuponTest {
 
+    private Kupon kuponBaru;
+
     @BeforeEach
     void setUp(){
+        this.kuponBaru = new Kupon();
     }
 
     @Test
     void testCreateKuponEmpty(){
+        assertNotNull(kuponBaru);
     }
 
     @Test
     void testEditPotonganKupon(){
-    }
-
-    @Test
-    void testDeleteKupon(){
+        kuponBaru.setPotonganHarga(0.5);
+        assertEquals(kuponBaru.getPotonganHarga(), 0.5);
     }
 
     @Test
     void testSetTanggalMulaiKuponValid(){
+        Calendar myCalendar = new GregorianCalendar(2024, 2, 11);
+        Date myDate = myCalendar.getTime();
+        kuponBaru.setTanggalMulai(myDate);
+        assertEquals(kuponBaru.getTanggalMulai(), myDate);
     }
 
     @Test
@@ -61,9 +66,6 @@ public class KuponTest {
 
     @Test
     void testSetStatusKupon(){
-    }
 
-    @Test
-    void testEditKupon(){
     }
 }
