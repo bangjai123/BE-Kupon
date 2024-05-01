@@ -1,12 +1,20 @@
 package id.ac.ui.cs.advprog.kupon_bookku.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import id.ac.ui.cs.advprog.kupon_bookku.repository.KuponRepository;
+import id.ac.ui.cs.advprog.kupon_bookku.service.KuponService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class KuponController {
-    @GetMapping("/")
-    public String getHello() {
-        return "Hello";
-    }
+
+    @Autowired
+    private KuponService kuponService;
+    @GetMapping("/semua-kupon")
+    @PostMapping("/buat-kupon")
+    @PostMapping("/edit-kupon")
+    @DeleteMapping("/delete-kupon")
+    @GetMapping("/gunakan-kupon")
+
 }
