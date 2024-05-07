@@ -12,6 +12,9 @@ public class KuponController {
     @Autowired
     private KuponService kuponService;
     @GetMapping("/semua-kupon")
+    public ResponseEntity<String> getAllKupon() {
+        return ResponseEntity.ok("Semua kupon");
+    }
     @PostMapping("/buat-kupon")
     @PostMapping("/edit-kupon")
     @DeleteMapping("/delete-kupon")
