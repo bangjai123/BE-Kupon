@@ -1,16 +1,24 @@
 package id.ac.ui.cs.advprog.kupon_bookku.model;
 
 import id.ac.ui.cs.advprog.kupon_bookku.model.Kupon;
+import id.ac.ui.cs.advprog.kupon_bookku.repository.KuponRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 
 import java.util.*;
 
+@SpringBootTest
 public class KuponTest {
 
     private Kupon kuponBaru;
+
+    @Autowired
+    private KuponRepository kuponRepository;
 
     @BeforeEach
     void setUp(){
@@ -19,7 +27,12 @@ public class KuponTest {
 
     @Test
     void testCreateKuponEmpty(){
-        assertNotNull(kuponBaru);
+        kuponRepository.save(kuponBaru);
+
+        Kupon kuponTersimpan = kuponRepository.findById(kuponBaru.getId()).get();
+        System.out.println("ini id nya: " + kuponTersimpan.getId());
+        assertNotNull(kuponTersimpan);
+
     }
 
     @Test

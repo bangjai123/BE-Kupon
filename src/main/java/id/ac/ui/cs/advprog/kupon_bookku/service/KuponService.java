@@ -13,5 +13,5 @@ public interface KuponService {
 
     void deleteKupon(String kuponId);
     Kupon findKuponByKode(String kodeKupon);
-    String gunakanKupon(Kupon kuponDigunakan, String hargaAwal);
+    String gunakanKupon(String kuponId, String hargaAwal);
 }

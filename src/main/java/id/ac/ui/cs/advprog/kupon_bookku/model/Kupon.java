@@ -2,13 +2,16 @@ package id.ac.ui.cs.advprog.kupon_bookku.model;
 
 import id.ac.ui.cs.advprog.kupon_bookku.enums.JenisKupon;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.Date;
 
-
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @Table(name = "Kupon" )
@@ -24,6 +27,9 @@ public class Kupon {
 
     @Column(name = "potongan_harga")
     private String potonganHarga;
+
+    @Column(name = "persentase")
+    private double persentase;
 
     @Column(name = "nama")
     private String nama;
@@ -46,16 +52,8 @@ public class Kupon {
     @Column(name = "harga_maksimum")
     private Integer hargaMaksimum;
 
-    public Kupon(){}
-
-    public Kupon(String nama, String potonganHarga, Date tangalMulai, Date tanggalSelesai, boolean statusKupon){
-        this.nama = nama;
-        this.potonganHarga = potonganHarga;
-        this.tangalMulai = tangalMulai;
-        this.tanggalSelesai = tanggalSelesai;
-        this.statusKupon = statusKupon;
-        this.jenisKupon = JenisKupon.DISKONHARGA.getValue();
+    public boolean isValid(){
+        Date today = new Date();
+        return !tangalMulai.after(today) && !tanggalSelesai.before(today);
     }
-
-
- }
+}
