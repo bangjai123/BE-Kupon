@@ -16,7 +16,7 @@ public class DiskonPersentaseDenganMinimumDanMaksimum extends Strategy{
                 return Math.max(harga - maksimumPotongan,0);
             }
             else {
-                return Math.max(harga - potongan,1);
+                return Math.max(harga - potongan,0)
             }
         }
     }
