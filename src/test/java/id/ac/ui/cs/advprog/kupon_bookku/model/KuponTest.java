@@ -27,58 +27,89 @@ public class KuponTest {
 
     @Test
     void testCreateKuponEmpty(){
-        kuponRepository.save(kuponBaru);
-
-        Kupon kuponTersimpan = kuponRepository.findById(kuponBaru.getId()).get();
-        System.out.println("ini id nya: " + kuponTersimpan.getId());
-        assertNotNull(kuponTersimpan);
-
+        assertNull(kuponBaru.getId());
+        assertNull(kuponBaru.getKode());
+        assertNull(kuponBaru.getPotonganHarga());
+        assertEquals(0.0, kuponBaru.getPersentase());
+        assertNull(kuponBaru.getNama());
+        assertNull(kuponBaru.getTangalMulai());
+        assertNull(kuponBaru.getTanggalSelesai());
+        assertFalse(kuponBaru.isStatusKupon());
+        assertNull(kuponBaru.getJenisKupon());
+        assertNull(kuponBaru.getHargaMinimum());
+        assertNull(kuponBaru.getHargaMaksimum());
     }
 
     @Test
     void testEditPotonganKupon(){
-//        kuponBaru.setPotonganHarga(0.5);
-        assertEquals(kuponBaru.getPotonganHarga(), 0.5);
+        kuponBaru.setPotonganHarga("10000");
+        assertEquals("10000", kuponBaru.getPotonganHarga());
     }
 
     @Test
     void testSetTanggalMulaiKuponValid(){
-        Calendar myCalendar = new GregorianCalendar(2024, 2, 11);
-        Date myDate = myCalendar.getTime();
-//        kuponBaru.setTanggalMulai(myDate);
-//        assertEquals(kuponBaru.getTanggalMulai(), myDate);
+        Date date = new Date();
+        kuponBaru.setTangalMulai(date);
+        assertEquals(date, kuponBaru.getTangalMulai());
     }
 
     @Test
     void testSetTanggalMulaiKuponInvalid(){
+        assertThrows(IllegalArgumentException.class, () -> {
+            kuponBaru.setTangalMulai(null);
+        });
     }
 
     @Test
     void testSetTanggalSelesaiKuponInvalid(){
+        assertThrows(IllegalArgumentException.class, () -> {
+            kuponBaru.setTanggalSelesai(null);
+        });
     }
 
     @Test
     void testSetTanggalSelesaiKuponValid(){
+        Date date = new Date();
+        kuponBaru.setTanggalSelesai(date);
+        assertEquals(date, kuponBaru.getTanggalSelesai());
     }
 
     @Test
     void testSetTanggalKuponSelesaiSebelumMulai(){
+        Date startDate = new Date();
+        Date endDate = new Date(startDate.getTime() - 10000); // 10 seconds before start date
+        kuponBaru.setTangalMulai(startDate);
+        kuponBaru.setTanggalSelesai(endDate);
+        assertFalse(kuponBaru.isValid());
     }
 
     @Test
     void testSetTanggalKuponValid(){
+        Date startDate = new Date();
+        Date endDate = new Date(startDate.getTime() + 10000); // 10 seconds after start date
+        kuponBaru.setTangalMulai(startDate);
+        kuponBaru.setTanggalSelesai(endDate);
+        assertTrue(kuponBaru.isValid());
     }
 
     @Test
     void testSetHargaValid(){
+        kuponBaru.setHargaMinimum(10000);
+        kuponBaru.setHargaMaksimum(20000);
+        assertEquals(10000, kuponBaru.getHargaMinimum());
+        assertEquals(20000, kuponBaru.getHargaMaksimum());
     }
 
     @Test
     void testSetPotonganHargaInvalid(){
+        assertThrows(IllegalArgumentException.class, () -> {
+            kuponBaru.setPotonganHarga(null);
+        });
     }
 
     @Test
     void testSetStatusKupon(){
-
+        kuponBaru.setStatusKupon(true);
+        assertTrue(kuponBaru.isStatusKupon());
     }
 }
