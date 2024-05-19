@@ -6,7 +6,6 @@ import id.ac.ui.cs.advprog.kupon_bookku.model.*;
 import id.ac.ui.cs.advprog.kupon_bookku.repository.KuponRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
 
 @Service
 @EnableAsync
@@ -35,10 +33,12 @@ public class KuponServiceImpl implements  KuponService {
         strategyMap.put(JenisKupon.DISKONPERSENTASEDENGANMINIMUM.getValue(), new DiskonPersentaseDenganMinimum());
         strategyMap.put(JenisKupon.DISKONPERSENTASEDENGANMINIMUMDANMAKSIMUM.getValue(), new DiskonPersentaseDenganMinimumDanMaksimum());
     }
+
     @Override
-    public Kupon createKupon(Kupon kupon) {
-        kuponRepository.save(kupon);
-        return kupon;
+    @Async
+    public CompletableFuture<Kupon> createKupon(Kupon kupon) {
+        Kupon createdKupon = kuponRepository.save(kupon);
+        return CompletableFuture.completedFuture(createdKupon);
     }
 
     @Override
@@ -58,7 +58,8 @@ public class KuponServiceImpl implements  KuponService {
     }
 
     @Override
-    public void editKupon(String kuponId, Kupon kuponBaru) {
+    @Async
+    public CompletableFuture<Void> editKupon(String kuponId, Kupon kuponBaru) {
         Optional<Kupon> diubah = kuponRepository.findById(kuponId);
         if(diubah.isPresent()){
             Kupon kuponDiubah = diubah.get();
@@ -68,13 +69,16 @@ public class KuponServiceImpl implements  KuponService {
             kuponDiubah.setTanggalSelesai(kuponBaru.getTanggalSelesai());
             kuponRepository.save(kuponDiubah);
         }
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public void deleteKupon(String kuponId) {
+    @Async
+    public CompletableFuture<Void> deleteKupon(String kuponId) {
         if(kuponRepository.findById(kuponId).isPresent()){
             kuponRepository.delete(kuponRepository.findById(kuponId).get());
         }
+        return CompletableFuture.completedFuture(null);
     }
     @Override
     public Kupon findKuponByKode(String kodeKupon) {
@@ -85,7 +89,8 @@ public class KuponServiceImpl implements  KuponService {
     }
 
     @Override
-    public String gunakanKupon(String kodeKupon, String hargaAwal) {
+    @Async
+    public CompletableFuture<String> gunakanKupon(String kodeKupon, String hargaAwal) {
         Optional<Kupon> kuponDicari = kuponRepository.findByKode(kodeKupon);
         if(kuponDicari.isPresent() && kuponDicari.get().isValid()){
             Kupon kuponDigunakan = kuponDicari.get();
@@ -95,8 +100,57 @@ public class KuponServiceImpl implements  KuponService {
             strategy.setMaksimumPotongan(kuponDigunakan.getHargaMaksimum());
             strategy.setPotonganHarga(Long.parseLong(kuponDigunakan.getPotonganHarga()));
             long hargaAkhir = strategy.calculateDiscount(Long.parseLong(hargaAwal));
-            return "" + hargaAkhir;
+            return CompletableFuture.completedFuture("" + hargaAkhir);
         }
-        return "Kupon tidak valid "+kuponDicari.get().isValid();
+        return CompletableFuture.completedFuture("Kupon tidak valid "+kuponDicari.get().isValid());
     }
+
+    @Override
+    @Async
+    public CompletableFuture<List<Kupon>> getAllKuponWithFilterAndSorting(String filter, String urutan) {
+        List<Kupon> semuaKupon = null;
+        if(filter.equals("harga")){
+            if(urutan.equals("asc")){
+                semuaKupon = kuponRepository.findByJenisKuponContainingOrderByPotonganHargaAsc("DH");
+            }
+            else if(urutan.equals("desc")){
+                semuaKupon = kuponRepository.findByJenisKuponContainingOrderByPotonganHargaDesc("DH");
+            }
+            else if (urutan.equals("none")){
+                semuaKupon = kuponRepository.findByJenisKuponContaining("DH");
+            }
+
+        }
+        else if(filter.equals("persentase")){
+            if(urutan.equals("asc")){
+                semuaKupon = kuponRepository.findByJenisKuponContainingOrderByPersentaseAsc("DP");
+            }
+            else if(urutan.equals("desc")){
+                semuaKupon = kuponRepository.findByJenisKuponContainingOrderByPersentaseDesc("DP");
+            }
+            else if (urutan.equals("none")){
+                semuaKupon = kuponRepository.findByJenisKuponContaining("DP");
+            }
+
+        }
+        else if (filter.equals("tanggal_mulai")){
+            if(urutan.equals("asc")){
+                semuaKupon = kuponRepository.findAllByOrderByTangalMulaiAsc();
+            }
+            else if(urutan.equals("desc")){
+                semuaKupon = kuponRepository.findAllByOrderByTangalMulaiDesc();
+            }
+        }
+        else if (filter.equals("tanggal_selesai")){
+            if(urutan.equals("asc")){
+                semuaKupon = kuponRepository.findAllByOrderByTanggalSelesaiAsc();
+            }
+            else if(urutan.equals("desc")){
+                semuaKupon = kuponRepository.findAllByOrderByTanggalSelesaiDesc();
+            }
+        }
+
+        return CompletableFuture.completedFuture(semuaKupon);
+    }
+
 }
