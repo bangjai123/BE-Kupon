@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 public class KuponController {
@@ -16,9 +17,8 @@ public class KuponController {
     private KuponService kuponService;
 
     @GetMapping("/semua-kupon")
-    public ResponseEntity<List<Kupon>> getAllKupon() {
-        List<Kupon> semuaKupon = kuponService.getAllKupon();
-        return ResponseEntity.ok(semuaKupon);
+    public CompletableFuture<ResponseEntity<List<Kupon>>> getAllKupon() {
+        return kuponService.getAllKupon().thenApply(ResponseEntity::ok);
     }
 
     @GetMapping("/buat-kupon")
@@ -45,9 +45,29 @@ public class KuponController {
         return ResponseEntity.ok("Kupon berhasil dihapus");
     }
 
-    @GetMapping("/gunakan-kupon/{kuponId}/{hargaAwal}")
-    public ResponseEntity<String> gunakanKupon(@PathVariable String kuponId, @PathVariable String hargaAwal) {
-        String hargaAkhir = kuponService.gunakanKupon(kuponId, hargaAwal);
+    @GetMapping("/gunakan-kupon/{kodeKupon}/{hargaAwal}")
+    public ResponseEntity<String> gunakanKupon(@PathVariable String kodeKupon, @PathVariable String hargaAwal) {
+        String hargaAkhir = kuponService.gunakanKupon(kodeKupon, hargaAwal);
         return ResponseEntity.ok(hargaAkhir);
+    }
+
+    @GetMapping("/kupon/{id}")
+    public ResponseEntity<Kupon> findKuponById(@PathVariable String id) {
+        Kupon kupon = kuponService.findById(id);
+        if (kupon != null) {
+            return ResponseEntity.ok(kupon);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/kupon/kode/{kode}")
+    public ResponseEntity<Kupon> findKuponByKode(@PathVariable String kode) {
+        Kupon kupon = kuponService.findKuponByKode(kode);
+        if (kupon != null) {
+            return ResponseEntity.ok(kupon);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

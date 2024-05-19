@@ -54,6 +54,7 @@ public class Kupon {
 
     public boolean isValid(){
         Date today = new Date();
+        System.out.println(today);
         return !tangalMulai.after(today) && !tanggalSelesai.before(today);
     }
 }

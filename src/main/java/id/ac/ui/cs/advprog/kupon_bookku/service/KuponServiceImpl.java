@@ -5,14 +5,20 @@ import id.ac.ui.cs.advprog.kupon_bookku.enums.JenisKupon;
 import id.ac.ui.cs.advprog.kupon_bookku.model.*;
 import id.ac.ui.cs.advprog.kupon_bookku.repository.KuponRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 @Service
+@EnableAsync
 public class KuponServiceImpl implements  KuponService {
     @Autowired
     private KuponRepository kuponRepository;
@@ -45,9 +51,10 @@ public class KuponServiceImpl implements  KuponService {
     }
 
     @Override
-    public List<Kupon> getAllKupon() {
+    @Async
+    public CompletableFuture<List<Kupon>> getAllKupon() {
         List<Kupon> semuaKupon = kuponRepository.findAll();
-        return semuaKupon;
+        return CompletableFuture.completedFuture(semuaKupon);
     }
 
     @Override
@@ -65,16 +72,21 @@ public class KuponServiceImpl implements  KuponService {
 
     @Override
     public void deleteKupon(String kuponId) {
-        kuponRepository.delete(kuponRepository.findById(kuponId).get());
+        if(kuponRepository.findById(kuponId).isPresent()){
+            kuponRepository.delete(kuponRepository.findById(kuponId).get());
+        }
     }
     @Override
-    public Kupon findKuponByKode(String kuponId) {
-       return kuponRepository.findById(kuponId).get();
+    public Kupon findKuponByKode(String kodeKupon) {
+        if(kuponRepository.findByKode(kodeKupon).isPresent()) {
+            return kuponRepository.findByKode(kodeKupon).get();
+        }
+        else return null;
     }
 
     @Override
-    public String gunakanKupon(String kuponId, String hargaAwal) {
-        Optional<Kupon> kuponDicari = kuponRepository.findById(kuponId);
+    public String gunakanKupon(String kodeKupon, String hargaAwal) {
+        Optional<Kupon> kuponDicari = kuponRepository.findByKode(kodeKupon);
         if(kuponDicari.isPresent() && kuponDicari.get().isValid()){
             Kupon kuponDigunakan = kuponDicari.get();
             Strategy strategy = strategyMap.get(kuponDigunakan.getJenisKupon());
@@ -85,6 +97,6 @@ public class KuponServiceImpl implements  KuponService {
             long hargaAkhir = strategy.calculateDiscount(Long.parseLong(hargaAwal));
             return "" + hargaAkhir;
         }
-        return "Kupon tidak valid";
+        return "Kupon tidak valid "+kuponDicari.get().isValid();
     }
 }
