@@ -32,6 +32,8 @@ val junitJupiterVersion = "5.9.1"
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     compileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
@@ -41,7 +43,9 @@ dependencies {
     testImplementation("io.github.bonigarcia:selenium-jupiter:$seleniumJupiterVersion")
     testImplementation("io.github.bonigarcia:webdrivermanager:$webdrivermanagerVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion")
+    runtimeOnly("org.postgresql:postgresql")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")
+
 }
 tasks.register<Test>("unitTest"){
     description = "Run unit tests."
@@ -80,3 +84,4 @@ tasks.jacocoTestReport {
         html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
     }
 }
+
