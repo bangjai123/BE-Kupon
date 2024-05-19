@@ -28,27 +28,23 @@ public class KuponController {
     }
 
     @PostMapping("/buat-kupon")
-    public ResponseEntity<Kupon> createKupon(@ModelAttribute Kupon newKupon) {
-        Kupon createdKupon = kuponService.createKupon(newKupon);
-        return ResponseEntity.ok(createdKupon);
+    public CompletableFuture<ResponseEntity<Kupon>> createKupon(@ModelAttribute Kupon newKupon) {
+        return kuponService.createKupon(newKupon).thenApply(ResponseEntity::ok);
     }
 
     @PutMapping("/edit-kupon/{kuponId}")
-    public ResponseEntity<Kupon> editKupon(@PathVariable String kuponId, @RequestBody Kupon updatedKupon) {
-        kuponService.editKupon(kuponId, updatedKupon);
-        return ResponseEntity.ok(updatedKupon);
+    public CompletableFuture<ResponseEntity<Void>> editKupon(@PathVariable String kuponId, @RequestBody Kupon updatedKupon) {
+        return kuponService.editKupon(kuponId, updatedKupon).thenApply(ResponseEntity::ok);
     }
 
     @DeleteMapping("/delete-kupon/{kuponId}")
-    public ResponseEntity<String> deleteKupon(@PathVariable String kuponId) {
-        kuponService.deleteKupon(kuponId);
-        return ResponseEntity.ok("Kupon berhasil dihapus");
+    public CompletableFuture<ResponseEntity<Void>> deleteKupon(@PathVariable String kuponId) {
+        return kuponService.deleteKupon(kuponId).thenApply(ResponseEntity::ok);
     }
 
     @GetMapping("/gunakan-kupon/{kodeKupon}/{hargaAwal}")
-    public ResponseEntity<String> gunakanKupon(@PathVariable String kodeKupon, @PathVariable String hargaAwal) {
-        String hargaAkhir = kuponService.gunakanKupon(kodeKupon, hargaAwal);
-        return ResponseEntity.ok(hargaAkhir);
+    public CompletableFuture<ResponseEntity<String>> gunakanKupon(@PathVariable String kodeKupon, @PathVariable String hargaAwal) {
+        return kuponService.gunakanKupon(kodeKupon, hargaAwal).thenApply(ResponseEntity::ok);
     }
 
     @GetMapping("/kupon/{id}")
@@ -69,5 +65,10 @@ public class KuponController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/semua-kupon/{filter}/{urutan}")
+    public CompletableFuture<ResponseEntity<List<Kupon>>> getAllKuponWithFilterAndSorting(@PathVariable String filter, @PathVariable String urutan) {
+        return kuponService.getAllKuponWithFilterAndSorting(filter, urutan).thenApply(ResponseEntity::ok);
     }
 }
