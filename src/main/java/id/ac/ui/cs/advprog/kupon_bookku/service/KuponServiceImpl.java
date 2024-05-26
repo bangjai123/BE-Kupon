@@ -84,7 +84,7 @@ public class KuponServiceImpl implements  KuponService {
     public String gunakanKupon(String kodeKupon, String hargaAwal) {
         Optional<Kupon> kuponDicari = kuponRepository.findByKode(kodeKupon);
         System.out.println(kuponDicari.isPresent());
-        if(kuponDicari.isPresent() && kuponDicari.get().isValid()){
+        if(kuponDicari.isPresent() && kuponDicari.get().isValid()&&kuponDicari.get().getStatusKupon()){
             Kupon kuponDigunakan = kuponDicari.get();
             Strategy strategy = strategyMap.get(kuponDigunakan.getJenisKupon());
             strategy.setPersentase(kuponDigunakan.getPersentase());
