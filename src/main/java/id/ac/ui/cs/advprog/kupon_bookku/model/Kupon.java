@@ -12,10 +12,10 @@ import java.util.Date;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
 @Setter
 @Table(name = "Kupon" )
 @Entity
+@Getter
 public class Kupon {
     @Id
     @GeneratedValue(generator = "uuid", strategy = GenerationType.UUID)
@@ -54,7 +54,10 @@ public class Kupon {
 
     public boolean isValid(){
         Date today = new Date();
-        System.out.println(today);
         return !tangalMulai.after(today) && !tanggalSelesai.before(today);
+    }
+
+    public boolean getStatusKupon(){
+        return statusKupon;
     }
 }

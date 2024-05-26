@@ -43,6 +43,7 @@ public class KuponSeedService {
             } else {
                 kupon.setHargaMaksimum(Integer.MAX_VALUE);
             }
+            kupon.setStatusKupon(true);
 
 
             cal.set(Calendar.YEAR, 2022);
