@@ -34,7 +34,7 @@ public class Kupon {
     @Column(name = "nama")
     private String nama;
 
-    @Column(name = "tanggal_mulai")
+    @Column(name = "tangal_mulai")
     private Date tangalMulai;
 
     @Column(name = "tanggal_selesai")
@@ -60,4 +60,5 @@ public class Kupon {
     public boolean getStatusKupon(){
         return statusKupon;
     }
+
 }
