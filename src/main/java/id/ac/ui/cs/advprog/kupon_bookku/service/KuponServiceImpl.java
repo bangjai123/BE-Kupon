@@ -35,6 +35,7 @@ public class KuponServiceImpl implements  KuponService {
     @Override
     public Kupon createKupon(Kupon kupon) {
         Kupon createdKupon = kuponRepository.save(kupon);
+        System.out.println("ini yang diprint:" +createdKupon.getTangalMulai());
         return createdKupon;
     }
 
