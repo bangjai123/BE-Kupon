@@ -27,7 +27,7 @@ public class KuponSeedService {
             JenisKupon jenisKupon = JenisKupon.values()[i % JenisKupon.values().length];
             kupon.setJenisKupon(jenisKupon.getValue());
             if (jenisKupon.name().contains("PERSENTASE")) {
-                kupon.setPotonganHarga(String.valueOf(random.nextDouble()));
+                kupon.setPersentase(random.nextDouble(1.0));
             } else {
                 kupon.setPotonganHarga(String.valueOf(random.nextInt(10000)));
             }
