@@ -28,8 +28,10 @@ public class KuponSeedService {
             kupon.setJenisKupon(jenisKupon.getValue());
             if (jenisKupon.name().contains("PERSENTASE")) {
                 kupon.setPersentase(random.nextDouble(1.0));
+                kupon.setPotonganHarga(String.valueOf(0));
             } else {
                 kupon.setPotonganHarga(String.valueOf(random.nextInt(10000)));
+                kupon.setPersentase(0);
             }
             if (jenisKupon.name().contains("MINIMUM")) {
                 kupon.setHargaMinimum(random.nextInt(10000));
