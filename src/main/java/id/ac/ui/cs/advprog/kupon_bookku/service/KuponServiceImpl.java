@@ -6,7 +6,6 @@ import id.ac.ui.cs.advprog.kupon_bookku.model.*;
 import id.ac.ui.cs.advprog.kupon_bookku.repository.KuponRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -16,7 +15,6 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 @Service
-@EnableAsync
 public class KuponServiceImpl implements  KuponService {
     @Autowired
     private KuponRepository kuponRepository;
@@ -35,10 +33,9 @@ public class KuponServiceImpl implements  KuponService {
     }
 
     @Override
-    @Async
-    public CompletableFuture<Kupon> createKupon(Kupon kupon) {
+    public Kupon createKupon(Kupon kupon) {
         Kupon createdKupon = kuponRepository.save(kupon);
-        return CompletableFuture.completedFuture(createdKupon);
+        return createdKupon;
     }
 
     @Override
@@ -51,15 +48,13 @@ public class KuponServiceImpl implements  KuponService {
     }
 
     @Override
-    @Async
-    public CompletableFuture<List<Kupon>> getAllKupon() {
+    public List<Kupon> getAllKupon() {
         List<Kupon> semuaKupon = kuponRepository.findAll();
-        return CompletableFuture.completedFuture(semuaKupon);
+        return semuaKupon;
     }
 
     @Override
-    @Async
-    public CompletableFuture<Void> editKupon(String kuponId, Kupon kuponBaru) {
+    public void editKupon(String kuponId, Kupon kuponBaru) {
         Optional<Kupon> diubah = kuponRepository.findById(kuponId);
         if(diubah.isPresent()){
             Kupon kuponDiubah = diubah.get();
@@ -69,16 +64,13 @@ public class KuponServiceImpl implements  KuponService {
             kuponDiubah.setTanggalSelesai(kuponBaru.getTanggalSelesai());
             kuponRepository.save(kuponDiubah);
         }
-        return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    @Async
-    public CompletableFuture<Void> deleteKupon(String kuponId) {
+    public void deleteKupon(String kuponId) {
         if(kuponRepository.findById(kuponId).isPresent()){
             kuponRepository.delete(kuponRepository.findById(kuponId).get());
         }
-        return CompletableFuture.completedFuture(null);
     }
     @Override
     public Kupon findKuponByKode(String kodeKupon) {
@@ -89,8 +81,7 @@ public class KuponServiceImpl implements  KuponService {
     }
 
     @Override
-    @Async
-    public CompletableFuture<String> gunakanKupon(String kodeKupon, String hargaAwal) {
+    public String gunakanKupon(String kodeKupon, String hargaAwal) {
         Optional<Kupon> kuponDicari = kuponRepository.findByKode(kodeKupon);
         if(kuponDicari.isPresent() && kuponDicari.get().isValid()){
             Kupon kuponDigunakan = kuponDicari.get();
@@ -100,14 +91,13 @@ public class KuponServiceImpl implements  KuponService {
             strategy.setMaksimumPotongan(kuponDigunakan.getHargaMaksimum());
             strategy.setPotonganHarga(Long.parseLong(kuponDigunakan.getPotonganHarga()));
             long hargaAkhir = strategy.calculateDiscount(Long.parseLong(hargaAwal));
-            return CompletableFuture.completedFuture("" + hargaAkhir);
+            return "" + hargaAkhir;
         }
-        return CompletableFuture.completedFuture("Kupon tidak valid "+kuponDicari.get().isValid());
+        return "Kupon tidak valid "+kuponDicari.get().isValid();
     }
 
     @Override
-    @Async
-    public CompletableFuture<List<Kupon>> getAllKuponWithFilterAndSorting(String filter, String urutan) {
+    public List<Kupon> getAllKuponWithFilterAndSorting(String filter, String urutan) {
         List<Kupon> semuaKupon = null;
         if(filter.equals("harga")){
             if(urutan.equals("asc")){
@@ -150,7 +140,7 @@ public class KuponServiceImpl implements  KuponService {
             }
         }
 
-        return CompletableFuture.completedFuture(semuaKupon);
+        return semuaKupon;
     }
 
 }
