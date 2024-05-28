@@ -59,9 +59,15 @@ public class KuponServiceImpl implements  KuponService {
         Optional<Kupon> diubah = kuponRepository.findById(kuponId);
         if(diubah.isPresent()){
             Kupon kuponDiubah = diubah.get();
+            kuponDiubah.setNama(kuponBaru.getNama());
             kuponDiubah.setKode(kuponBaru.getKode());
-            kuponDiubah.setJenisKupon(kuponBaru.getJenisKupon());
             kuponDiubah.setPotonganHarga(kuponBaru.getPotonganHarga());
+            kuponDiubah.setPersentase(kuponBaru.getPersentase());
+            kuponDiubah.setHargaMinimum(kuponBaru.getHargaMinimum());
+            kuponDiubah.setHargaMaksimum(kuponBaru.getHargaMaksimum());
+            kuponDiubah.setJenisKupon(kuponBaru.getJenisKupon());
+            kuponDiubah.setStatusKupon(kuponBaru.getStatusKupon());
+            kuponDiubah.setTangalMulai(kuponBaru.getTangalMulai());
             kuponDiubah.setTanggalSelesai(kuponBaru.getTanggalSelesai());
             kuponRepository.save(kuponDiubah);
         }
