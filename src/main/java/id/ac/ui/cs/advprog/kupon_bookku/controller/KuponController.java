@@ -47,7 +47,8 @@ public class KuponController {
 
         return ResponseEntity.ok(kuponService.createKupon(kupon));
     }
-    
+
+    @CrossOrigin(origins = "*")
     @PutMapping("/edit-kupon/{kuponId}")
     public ResponseEntity<Void> editKupon(@PathVariable String kuponId, @RequestBody HashMap<String, String> updatedKupon) {
         Kupon kupon = new Kupon();
